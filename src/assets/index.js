@@ -11,3 +11,4 @@ export { default as ReviewIcon } from './icon/review-icon.svg';
 export { default as FacebookIcon } from './icon/facebook-icon.svg';
 export { default as InstagramIcon } from './icon/instagram-icon.svg';
 export { default as TwitterIcon } from './icon/twitter-icon.svg';
+export { default as DeleteIcon } from './icon/delete-icon.svg';

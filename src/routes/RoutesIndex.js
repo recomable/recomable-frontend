@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {Home, Selection} from "../screens";
+import {Home, RecommendationLoading, Selection} from "../screens";
 
 const RoutesIndex = () => {
     return (
@@ -7,7 +7,8 @@ const RoutesIndex = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={Home}/>
-                    <Route path="/pilihan" element={Selection}/>
+                    <Route path="/pilih-tempat" element={Selection}/>
+                    <Route path="/dalam-proses" element={RecommendationLoading}/>
                 </Routes>
             </BrowserRouter>
         </>

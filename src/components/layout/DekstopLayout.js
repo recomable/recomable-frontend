@@ -1,9 +1,12 @@
 import {Breadcrumb, Col, Layout, Menu, Row, Space, theme} from 'antd';
 import {FacebookIcon, InstagramIcon, Logo, LogoVertical, TwitterIcon} from "../../assets";
+import {useNavigate} from "react-router-dom";
 
 const {Header, Content, Footer} = Layout;
 
 const DekstopLayout = (props) => {
+    const navigate = useNavigate()
+
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -22,7 +25,7 @@ const DekstopLayout = (props) => {
                         borderBottom: '1px solid #B5BDE9',
                     }}
                 >
-                    <div style={{display: 'flex', alignItems: 'center', height: "100%"}}>
+                    <div style={{display: 'flex', alignItems: 'center', height: "100%"}} onClick={() => navigate("/")}>
                         <img src={Logo} alt=""/>
                     </div>
                 </Header>

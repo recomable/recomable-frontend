@@ -1,10 +1,18 @@
 import {Button, Card, Col, Rate, Row, Space, Typography} from "antd";
 import {BannerTotal, JoinBackground, Jumbotron, PlaceDefault, PlaceIcon, ReviewIcon, SearchIcon} from "../../assets";
 import {ArrowLongRightIcon} from "@heroicons/react/24/solid";
+import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 const {Text, Title} = Typography;
 
 const HomeScreen = () => {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, []);
+
     return (
         <>
             <Space direction="vertical" size={85}>
@@ -23,6 +31,7 @@ const HomeScreen = () => {
                                 <Row gutter={24}>
                                     <Col span={6}>
                                         <Button
+                                            onClick={() => {navigate("/pilih-tempat")}}
                                             style={{
                                                 marginTop: 8,
                                                 borderRadius: 14,
