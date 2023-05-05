@@ -1,7 +1,14 @@
 import {Card, Rate, Space} from "antd";
 import {PlaceDefault} from "../assets";
+import {useState} from "react";
 
 const CardPlace = (props) => {
+    const [imgSrc, setImgSrc] = useState(props.image);
+
+    const handleImgError = () => {
+        // If the image fails to load, update the source to the default image
+        setImgSrc(PlaceDefault);
+    };
     return (
         <>
             <Card
@@ -15,7 +22,7 @@ const CardPlace = (props) => {
             >
                 <Space direction="vertical" size={24}>
                     <Space direction="vertical" size={8} style={{width: "100%"}}>
-                        <img src={props.image}
+                        <img src={imgSrc}
                              style={{
                                  height: 240,
                                  width: "100%",
@@ -23,6 +30,7 @@ const CardPlace = (props) => {
                                  borderRadius: 8
                              }}
                              alt=""
+                             onError={handleImgError}
                         />
                         <div className="tag">
                             {props.tag === "cafe" ? "Kafe" : "Restoran"}

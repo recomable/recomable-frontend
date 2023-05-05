@@ -10,7 +10,6 @@ export const getAllPlace = () => async (dispatch) => {
             method: 'GET',
             url: placeUrl,
         }).then((res) => {
-            console.log(res.data.data)
             dispatch({
                 type: GET_ALL_PLACE,
                 payload: res.data.data,

@@ -3,18 +3,23 @@ import {useEffect, useState} from "react";
 import PlaceSelectionScreen from "./PlaceSelectionScreen";
 import LocationSelectionScreen from "./LocationSelectionScreen";
 import PreferenceSelectionScreen from "./PreferenceSelectionScreen";
+import {useSelector} from "react-redux";
 
 const SelectionScreen = () => {
     const {token} = theme.useToken();
     const [current, setCurrent] = useState(0);
+    const {dataMyPlace} = useSelector((state) => state.place);
 
     useEffect(() => {
         window.scrollTo(0, 0)
     }, []);
 
     const onChange = (value) => {
-        console.log('onChange:', value);
-        setCurrent(value);
+        // console.log('onChange:', value);
+        // if(dataMyPlace.category !== null){
+        //     setCurrent(value);
+        // }
+        // message.error("Pilih tempat terlebih dahulu!")
     };
 
     const next = () => {
@@ -49,7 +54,9 @@ const SelectionScreen = () => {
         <>
             <div style={{padding: "66px 0"}}>
                 <Steps style={{padding: "0 266px", paddingBottom: 66}}
-                       current={current} items={items} onChange={onChange}
+                       current={current} items={items}
+                       // aktifkan onclick step
+                       // onChange={onChange}
                 />
                 {steps[current].content}
             </div>

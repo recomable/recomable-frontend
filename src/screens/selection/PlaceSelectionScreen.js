@@ -3,9 +3,14 @@ import {PlaceIcon, SearchIcon} from "../../assets";
 import {ArrowLongRightIcon} from "@heroicons/react/24/solid";
 import {useDispatch} from "react-redux";
 import {GET_MY_PLACE_DETAIL} from "../../setup/redux/type/PlaceType";
+import {useEffect} from "react";
 
 const PlaceSelectionScreen = ({onNext, onPrev}) => {
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     const selectCafe = () => {
         dispatch({

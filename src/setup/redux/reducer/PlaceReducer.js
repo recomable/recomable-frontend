@@ -1,9 +1,10 @@
-import {GET_ALL_PLACE, GET_MY_PLACE_DETAIL, POST_PREFERENCE} from '../type/PlaceType';
+import {DELETE_PREFERENCE, GET_ALL_PLACE, GET_MY_PLACE_DETAIL, POST_PREFERENCE} from '../type/PlaceType';
 
 const initialState = {
     dataMyPlace: [],
     dataPlace: [],
     dataPreference: [],
+    dataKecamatan: [],
     isLoading: false,
     error: null,
 }
@@ -32,7 +33,13 @@ const placeReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                dataPlace: payload,
+                dataPreference: payload,
+            }
+        case `${DELETE_PREFERENCE}`:
+            return {
+                ...state,
+                isLoading: false,
+                dataPreference: state.dataPreference.filter((item) => item.place_name !== action.payload.place_name),
             }
         default:
             return {
