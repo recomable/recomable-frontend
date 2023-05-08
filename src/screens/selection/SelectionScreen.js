@@ -4,6 +4,7 @@ import PlaceSelectionScreen from "./PlaceSelectionScreen";
 import LocationSelectionScreen from "./LocationSelectionScreen";
 import PreferenceSelectionScreen from "./PreferenceSelectionScreen";
 import {useSelector} from "react-redux";
+import PreferenceLocationScreen from "./PreferenceLocationScreen";
 
 const SelectionScreen = () => {
     const {token} = theme.useToken();
@@ -34,6 +35,10 @@ const SelectionScreen = () => {
         {
             title: 'Pilih Tempat',
             content: <PlaceSelectionScreen onNext={next} onPrev={prev}/>,
+        },
+        {
+            title: 'Pilih Lokasi',
+            content: <PreferenceLocationScreen onNext={next} onPrev={prev}/>,
         },
         {
             title: 'Masukkan Lokasi',

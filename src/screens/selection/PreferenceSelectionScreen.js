@@ -20,6 +20,7 @@ const PreferenceSelectionScreen = () => {
     useEffect(() => {
         window.scrollTo(0, 0)
         dispatch(getAllPlace())
+        console.log(dataMyPlace)
     }, [])
 
     const data = dataPlace
@@ -184,7 +185,7 @@ const PreferenceSelectionScreen = () => {
                     <Row gutter={[28, 28]}>
                         {dataPreference.map((item, index) => {
                             return (
-                                <Col span={8}>
+                                <Col span={8} key={item.id}>
                                     <Card
                                         style={{
                                             width: "100%",
