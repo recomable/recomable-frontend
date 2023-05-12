@@ -1,8 +1,8 @@
-import {Button, Card, Col, Form, Input, message, Row, Select, Space, Typography} from "antd";
+import {AutoComplete, Button, Card, Col, Form, Input, message, Row, Select, Space, Typography} from "antd";
 import CardPlace from "../../components/CardPlace";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {getAllPlace} from "../../setup/redux/action/PlaceAction";
 import {getRecommendation} from "../../setup/redux/action/RecommendationAction";
 import {DeleteIcon} from "../../assets";
@@ -15,7 +15,8 @@ const PreferenceSelectionScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const {dataPlace, dataMyPlace, dataPreference} = useSelector((state) => state.place);
+    const {dataPlace, dataMyPlace, dataPreference, isLoading} = useSelector((state) => state.place);
+    const [searchOptions, setSearchOptions] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -25,33 +26,32 @@ const PreferenceSelectionScreen = () => {
 
     const data = dataPlace
 
-    const dataPreferenceDummy = [
-        {
-            id: 1,
-            name: "Kafe Kita",
-            rating: 1,
-        },
-        {
-            id: 2,
-            name: "Kafe Kemarin Sore",
-            rating: 3,
-        },
-        {
-            id: 3,
-            name: "Kita Pasti Kembali",
-            rating: 5,
-        },
-    ]
+    const handleSearch = (value) => {
+        const filteredOptions = data
+            .filter((item) => item.place_name.toLowerCase().includes(value.toLowerCase()))
+            .map((item) => ({ value: item.place_name }));
+        setSearchOptions(filteredOptions);
+    };
+
+    const handleSelect = (value, option) => {
+        const place_name = option.label;
+        const rating = form.getFieldValue("rating");
+        const newPreference = { place_name, rating };
+        // dispatch({
+        //     type: `${POST_PREFERENCE}`,
+        //     payload: [...dataPreference, newPreference],
+        // });
+        // form.resetFields(["place_name", "rating"]);
+    };
 
     const handleSubmit = () => {
         message.success('Data berhasil disimpan')
         console.log(dataPreference)
-        dispatch(getRecommendation(dataPreference, navigate))
+        dispatch(getRecommendation(dataPreference, dataMyPlace.latitude, dataMyPlace.longitude, navigate))
         // navigate('/dalam-proses')
     }
 
     const onFinish = (values) => {
-        // console.log(values);
         dispatch({
             type: `${POST_PREFERENCE}`,
             payload: [...dataPreference, values],
@@ -106,26 +106,13 @@ const PreferenceSelectionScreen = () => {
                                 label="Nama Tempat"
                                 name="place_name"
                             >
-                                <Select
-                                    showSearch
-                                    size={"large"}
-                                    style={{
-                                        width: "100%",
-                                    }}
+                                <AutoComplete
+                                    size="large"
+                                    style={{ width: "100%" }}
                                     placeholder="Nama Kafe"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                    filterSort={(optionA, optionB) =>
-                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                    }
-                                    options={
-                                        data.map((item, index) => {
-                                            return {
-                                                value: item.place_name_x,
-                                                label: item.place_name_x,
-                                            }
-                                        })
-                                    }
+                                    options={searchOptions}
+                                    onSearch={handleSearch}
+                                    onSelect={handleSelect}
                                 />
                             </Form.Item>
                             <Form.Item
@@ -177,7 +164,7 @@ const PreferenceSelectionScreen = () => {
                                         width: 200,
                                         backgroundColor: "#203ABD",
                                         fontWeight: 700,
-                                    }} type="primary" htmlType="submit">+ Tambahskan</Button>
+                                    }} type="primary" htmlType="submit">+ Tambahkan</Button>
                                 </div>
                             </Form.Item>
                         </Form>
@@ -222,7 +209,7 @@ const PreferenceSelectionScreen = () => {
                         width: "100%",
                         backgroundColor: "#203ABD",
                         fontWeight: 700,
-                    }} type="primary" onClick={() => handleSubmit()}>Lanjutkan
+                    }} loading={isLoading} type="primary" onClick={() => handleSubmit()}>Lanjutkan
                     </Button>
                 </Space>
             </div>

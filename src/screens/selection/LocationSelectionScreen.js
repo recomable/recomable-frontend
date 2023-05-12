@@ -13,7 +13,8 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
     const [locations, setLocations] = useState([{id: 1, value: ''}]);
     const [userKecamatan, setUserKecamatan] = useState("");
     // const [userLocation, setUserLocation] = useState("");
-    const googleMapsPattern = /^https?:\/\/www\.google\.com\/maps\/.+$/;
+    const googleMapsPattern = /^https?:\/\/(www\.)?google\.com\/maps(\/.+|(\?q=)).+$/;
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -33,8 +34,36 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
         );
     };
 
-    const onSearch = (value, id) => {
-        console.log(`Search ${id}: ${value}`);
+    const handleGenerateLocation = async (id) => {
+        if (navigator.geolocation) {
+            const options = {
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 15000,
+            };
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+                });
+
+                const { latitude, longitude } = position.coords;
+                const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                const updatedLocations = locations.map((loc) => {
+                    if (loc.id === id) {
+                        return { ...loc, value: googleMapsLink };
+                    }
+                    return loc;
+                });
+                setLocations(updatedLocations);
+            } catch (error) {
+                console.log(error);
+                // Handle error when geolocation retrieval fails
+            }
+        } else {
+            // Geolocation is not supported by the browser
+            console.log("Geolocation is not supported");
+        }
     };
 
     const onChange = (e, id) => {
@@ -44,33 +73,32 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
         setLocations(updatedLocations);
     };
 
-    // const onChange = (value) => {
-    //     setUserLocation(value.target.value)
-    // }
-
     const handleKecamatanChange = (value) => {
         setUserKecamatan(value)
     }
 
-    const onSubmit = () => {
-        // if (locations.some(location => location.value === "")) {
-        //     return message.error("Lokasi tidak boleh kosong");
-        // }
-        //
-        // const isGoogleMapsLink = (location) =>
-        //     googleMapsPattern.test(location.value);
-        //
-        // if (locations.every(isGoogleMapsLink)) {
-        //     dispatch({
-        //         type: `${GET_MY_PLACE_DETAIL}`,
-        //         payload: {...dataMyPlace, locations},
-        //     });
-        //     onNext();
-        // } else {
-        //     return message.error("Link harus berupa link google maps");
-        // }
+    const extractLatLngFromLink = (link) => {
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+        const match = link.match(regex);
+        if (match && match.length === 3) {
+            const latitude = parseFloat(match[1]);
+            const longitude = parseFloat(match[2]);
+            return { latitude, longitude };
+        }
 
-        if(dataMyPlace.location === "kecamatan") {
+        const queryRegex = /q=(-?\d+\.\d+),(-?\d+\.\d+)/;
+        const queryMatch = link.match(queryRegex);
+        if (queryMatch && queryMatch.length === 3) {
+            const latitude = parseFloat(queryMatch[1]);
+            const longitude = parseFloat(queryMatch[2]);
+            return { latitude, longitude };
+        }
+
+        return null;
+    };
+
+    const onSubmit = () => {
+        if (dataMyPlace.location === "kecamatan") {
             // Check if userKecamatan is not empty
             if (userKecamatan === "") {
                 return message.error("Lokasi tidak boleh kosong");
@@ -79,24 +107,55 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                 ...dataMyPlace,
                 locations: userKecamatan,
             };
-            dispatch({type: `${GET_MY_PLACE_DETAIL}`, payload});
+            dispatch({ type: `${GET_MY_PLACE_DETAIL}`, payload });
         } else {
             // Check if all locations are valid Google Maps links
+            console.log(locations, "ini lokasi")
             const isValid = locations.every((loc) => googleMapsPattern.test(loc.value));
             if (!isValid) {
                 return message.error("Link harus berupa link google maps");
             }
 
-            // Dispatch action to update dataMyPlace with all locations
+            let latitude, longitude;
+
+            if (locations.length === 1) {
+                // Single location, extract latitude and longitude
+                const latLng = extractLatLngFromLink(locations[0].value);
+                if (latLng) {
+                    latitude = latLng.latitude;
+                    longitude = latLng.longitude;
+                }
+            } else {
+                // Multiple locations, calculate the center point
+                const latitudes = [];
+                const longitudes = [];
+                locations.forEach((location) => {
+                    const latLng = extractLatLngFromLink(location.value);
+                    if (latLng) {
+                        latitudes.push(latLng.latitude);
+                        longitudes.push(latLng.longitude);
+                    }
+                });
+
+                if (latitudes.length > 0 && longitudes.length > 0) {
+                    latitude = latitudes.reduce((sum, value) => sum + value, 0) / latitudes.length;
+                    longitude = longitudes.reduce((sum, value) => sum + value, 0) / longitudes.length;
+                }
+            }
+
+            // Dispatch action to update dataMyPlace with locations and coordinates
             const payload = {
                 ...dataMyPlace,
                 locations: locations.map((loc) => loc.value),
+                latitude,
+                longitude,
             };
-            dispatch({type: `${GET_MY_PLACE_DETAIL}`, payload});
+            dispatch({ type: `${GET_MY_PLACE_DETAIL}`, payload });
         }
 
         onNext();
-    }
+    };
+
 
     return (
         <>
@@ -231,13 +290,21 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                                                         )
                                                     )
                                                 }
-                                                placeholder="Masukkan lokasi kamu disini"
+                                                placeholder="Masukkan link lokasi kamu disini"
                                                 size="large"
                                                 style={{ width: "100%" }}
                                             />
+                                            {location.id === 1 && (
+                                            <Button
+                                                onClick={() => handleGenerateLocation(location.id)}
+                                                style={{ marginLeft: 8 }} size="large"
+                                            >
+                                                Generate
+                                            </Button>
+                                            )}
                                             <Button
                                                 onClick={() => handleDeleteLocation(location.id)}
-                                                style={{ marginLeft: 8 }}
+                                                style={{ marginLeft: 8 }} size="large"
                                             >
                                                 Delete
                                             </Button>
