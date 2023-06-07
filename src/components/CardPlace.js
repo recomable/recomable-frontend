@@ -33,7 +33,7 @@ const CardPlace = (props) => {
                              onError={handleImgError}
                         />
                         <div className="tag">
-                            {props.tag === "cafe" ? "Kafe" : "Restoran"}
+                            Kafe
                         </div>
                         <h1 style={{
                             margin: 0,

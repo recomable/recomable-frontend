@@ -5,6 +5,7 @@ import LocationSelectionScreen from "./LocationSelectionScreen";
 import PreferenceSelectionScreen from "./PreferenceSelectionScreen";
 import {useSelector} from "react-redux";
 import PreferenceLocationScreen from "./PreferenceLocationScreen";
+import PlaceTypeSelectionScreen from "./PlaceTypeSelectionScreen";
 
 const SelectionScreen = () => {
     const {token} = theme.useToken();
@@ -48,6 +49,10 @@ const SelectionScreen = () => {
             title: 'Preferensi Tempat',
             content: <PreferenceSelectionScreen onNext={next} onPrev={prev}/>,
         },
+        {
+            title: 'Jenis Kafe',
+            content: <PlaceTypeSelectionScreen onNext={next} onPrev={prev}/>,
+        },
     ];
 
     const items = steps.map((item) => ({
@@ -58,7 +63,7 @@ const SelectionScreen = () => {
     return (
         <>
             <div style={{padding: "66px 0"}}>
-                <Steps style={{padding: "0 266px", paddingBottom: 66}}
+                <Steps style={{padding: "0 200px", paddingBottom: 66}}
                        current={current} items={items}
                        // aktifkan onclick step
                        // onChange={onChange}

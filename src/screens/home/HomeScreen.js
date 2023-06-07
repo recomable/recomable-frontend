@@ -24,7 +24,7 @@ const HomeScreen = () => {
                                     <h1 style={{margin: 0, fontSize: 50, fontWeight: 700, color: "#203ABD"}}>Cari tempat
                                         nongkrong nyaman dalam sekian detik</h1>
                                     <p style={{margin: 0, fontSize: 22, fontWeight: 400, color: "#616161"}}>Cari kafe
-                                        atau restoran yang membandingkan preferensimu dengan lebih dari ribuan ulasan
+                                        yang membandingkan preferensimu dengan lebih dari ribuan ulasan
                                         dari ratusan tempat
                                         di Kota Surabaya</p>
                                 </Space>
@@ -338,6 +338,7 @@ const HomeScreen = () => {
                         justifyContent: "center",
                     }}>
                         <Button
+                            onClick={() => {navigate("/pilih-tempat")}}
                             style={{
                                 marginTop: 8,
                                 borderRadius: 14,

@@ -9,11 +9,10 @@ const ResultScreen = () => {
     const {dataRecommendation, dataPlaceDetail} = useSelector((state) => state.recommendation);
 
     useEffect(() => {
-        console.log(dataRecommendation, "ini di result screen")
+        // console.log(dataRecommendation, "ini di result screen")
         window.scrollTo(0, 0)
     }, [])
 
-    // console.log(dataPlaceDetail, "ini di result screen")
     return (
         <>
             <div style={{padding: "53px 293px"}}>

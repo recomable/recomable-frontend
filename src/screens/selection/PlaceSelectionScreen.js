@@ -83,8 +83,9 @@ const PlaceSelectionScreen = ({onNext, onPrev}) => {
                         </Col>
                         <Col span={12}>
                             <Card
-                                onClick={() => selectRestaurant()}
+                                // onClick={() => selectRestaurant()}
                                 style={{
+                                    cursor: "not-allowed",
                                     border: "1px solid #B5BDE9",
                                     borderRadius: 14,
                                     backgroundColor: "#203ABD",
@@ -109,8 +110,8 @@ const PlaceSelectionScreen = ({onNext, onPrev}) => {
                                             fontSize: 16,
                                             color: "white",
                                             fontWeight: 600
-                                        }}>Lanjutkan </h1>
-                                        <ArrowLongRightIcon width="24" style={{color: "white"}}/>
+                                        }}>Coming Soon! </h1>
+                                        {/*<ArrowLongRightIcon width="24" style={{color: "white"}}/>*/}
                                     </Space>
                                 </Space>
                             </Card>

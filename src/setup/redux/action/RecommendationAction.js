@@ -2,19 +2,20 @@ import axios from "axios";
 import {GET_PLACE_DETAILS, GET_RECOMMENDATION} from "../type/RecommendationType";
 import {detailPlaceUrl, placeUrl, recommendationUrl} from "./config";
 
-export const getRecommendation = (data, latitude, longitude, navigate) => async (dispatch) => {
+export const getRecommendation = (data, latitude, longitude, atmosphere, navigate) => async (dispatch) => {
     try {
         dispatch({ type: `LOADING` });
 
         await axios({
             method: 'POST',
             url: recommendationUrl,
-            data: {user_example: data, latitude: latitude, longitude: longitude},
+            data: {"user_example": data, "latitude": latitude, "longitude": longitude, "atmosphere": atmosphere}
         }).then((res) => {
             dispatch({
                 type: GET_RECOMMENDATION,
                 payload: res.data.data,
             });
+            console.log(res.data.data, "ini di action")
             navigate('/hasil');
         });
     } catch (error) {

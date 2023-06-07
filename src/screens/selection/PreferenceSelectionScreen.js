@@ -11,7 +11,7 @@ import {GET_MY_PLACE_DETAIL, POST_PREFERENCE} from "../../setup/redux/type/Place
 const {Title} = Typography;
 const {Search} = Input;
 
-const PreferenceSelectionScreen = () => {
+const PreferenceSelectionScreen = ({onNext, onPrev}) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -45,9 +45,10 @@ const PreferenceSelectionScreen = () => {
     };
 
     const handleSubmit = () => {
-        message.success('Data berhasil disimpan')
-        console.log(dataPreference)
-        dispatch(getRecommendation(dataPreference, dataMyPlace.latitude, dataMyPlace.longitude, navigate))
+        dataPreference.length > 0 ? onNext() : message.error("Masukkan minimal 1 kafe yang pernah kamu kunjungi!")
+        // message.success('Data berhasil disimpan')
+        // console.log(dataPreference)
+        // dispatch(getRecommendation(dataPreference, dataMyPlace.latitude, dataMyPlace.longitude, navigate))
         // navigate('/dalam-proses')
     }
 
