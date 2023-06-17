@@ -15,7 +15,7 @@ export const getAllPlace = () => async (dispatch) => {
                 payload: res.data.data,
             });
 
-            console.log(res.data.data, "ini semua data place")
+            // console.log(res.data.data, "ini semua data place")
         });
     } catch (error) {
         dispatch({

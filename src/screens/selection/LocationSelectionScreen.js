@@ -18,6 +18,10 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        dispatch({
+            type: `${GET_MY_PLACE_DETAIL}`,
+            payload: {...dataMyPlace, location: "myLocation"},
+        })
     }, [])
 
     const handleAddLocation = () => {
@@ -110,7 +114,7 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
             dispatch({ type: `${GET_MY_PLACE_DETAIL}`, payload });
         } else {
             // Check if all locations are valid Google Maps links
-            console.log(locations, "ini lokasi")
+            // console.log(locations, "ini lokasi")
             const isValid = locations.every((loc) => googleMapsPattern.test(loc.value));
             if (!isValid) {
                 return message.error("Link harus berupa link google maps");

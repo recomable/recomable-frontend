@@ -33,21 +33,21 @@ const SelectionScreen = () => {
     };
 
     const steps = [
+        // {
+        //     title: 'Pilih Tempat',
+        //     content: <PlaceSelectionScreen onNext={next} onPrev={prev}/>,
+        // },
+        // {
+        //     title: 'Pilih Lokasi',
+        //     content: <PreferenceLocationScreen onNext={next} onPrev={prev}/>,
+        // },
         {
-            title: 'Pilih Tempat',
-            content: <PlaceSelectionScreen onNext={next} onPrev={prev}/>,
-        },
-        {
-            title: 'Pilih Lokasi',
-            content: <PreferenceLocationScreen onNext={next} onPrev={prev}/>,
+            title: 'Preferensi Tempat',
+            content: <PreferenceSelectionScreen onNext={next} onPrev={prev}/>,
         },
         {
             title: 'Masukkan Lokasi',
             content: <LocationSelectionScreen onNext={next} onPrev={prev}/>,
-        },
-        {
-            title: 'Preferensi Tempat',
-            content: <PreferenceSelectionScreen onNext={next} onPrev={prev}/>,
         },
         {
             title: 'Jenis Kafe',

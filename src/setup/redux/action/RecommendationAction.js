@@ -15,7 +15,7 @@ export const getRecommendation = (data, latitude, longitude, atmosphere, navigat
                 type: GET_RECOMMENDATION,
                 payload: res.data.data,
             });
-            console.log(res.data.data, "ini di action")
+            // console.log(res.data.data, "ini di action")
             navigate('/hasil');
         });
     } catch (error) {

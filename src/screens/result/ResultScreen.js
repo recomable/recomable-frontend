@@ -10,6 +10,7 @@ const ResultScreen = () => {
 
     useEffect(() => {
         // console.log(dataRecommendation, "ini di result screen")
+        localStorage.setItem('dataRecommendation', JSON.stringify(dataRecommendation));
         window.scrollTo(0, 0)
     }, [])
 

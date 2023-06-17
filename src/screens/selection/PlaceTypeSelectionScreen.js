@@ -17,7 +17,8 @@ const PlaceTypeSelectionScreen = () => {
 
     const handleSubmit = (atmosphere) => {
         setModal2Open(true)
-        console.log(dataPreference)
+        // console.log(dataPreference)
+        localStorage.setItem('dataPreference', JSON.stringify(dataPreference));
         dispatch(getRecommendation(dataPreference, dataMyPlace.latitude, dataMyPlace.longitude, atmosphere, navigate))
     }
 
