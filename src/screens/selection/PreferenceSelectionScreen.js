@@ -14,14 +14,11 @@ import {
     Typography
 } from "antd";
 import CardPlace from "../../components/CardPlace";
-import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {getAllPlace} from "../../setup/redux/action/PlaceAction";
-import {getRecommendation} from "../../setup/redux/action/RecommendationAction";
 import {DeleteIcon} from "../../assets";
 import {
-    GET_MY_PLACE_DETAIL,
     POST_PREFERENCE,
     SAVE_PREFERENCE,
     SAVE_RECOMMENDATION
@@ -33,13 +30,11 @@ const {Search} = Input;
 const PreferenceSelectionScreen = ({onNext, onPrev}) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-    const navigate = useNavigate()
     const {dataPlace, dataPreference, dataSaveRecommendation, isLoading} = useSelector((state) => state.place);
     const [searchOptions, setSearchOptions] = useState([]);
     const [modalPreference, setModalPreference] = useState(false);
     const [modalRecommendation, setModalRecommendation] = useState(false);
     const [storedPreferenceData, setStoredPreferenceData] = useState(null);
-    const [storedRecommendationData, setStoredRecommendationData] = useState(null);
     const [recommendationRating, setRecommendationRating] = useState(null);
 
     useEffect(() => {
@@ -50,10 +45,6 @@ const PreferenceSelectionScreen = ({onNext, onPrev}) => {
             setStoredPreferenceData(JSON.parse(storedDataPreference));
             setModalPreference(true);
         }
-        // if (storedDataRecommendation) {
-        //     setModalRecommendation(true);
-        // }
-        // console.log(dataMyPlace)
     }, [])
 
     const data = dataPlace
@@ -68,20 +59,10 @@ const PreferenceSelectionScreen = ({onNext, onPrev}) => {
     const handleSelect = (value, option) => {
         const place_name = option.label;
         const rating = form.getFieldValue("rating");
-        const newPreference = {place_name, rating};
-        // dispatch({
-        //     type: `${POST_PREFERENCE}`,
-        //     payload: [...dataPreference, newPreference],
-        // });
-        // form.resetFields(["place_name", "rating"]);
     };
 
     const handleSubmit = () => {
         dataPreference.length > 0 ? onNext() : message.error("Masukkan minimal 1 kafe yang pernah kamu kunjungi!")
-        // message.success('Data berhasil disimpan')
-        // console.log(dataPreference)
-        // dispatch(getRecommendation(dataPreference, dataMyPlace.latitude, dataMyPlace.longitude, navigate))
-        // navigate('/dalam-proses')
     }
 
     const onFinish = (values) => {
@@ -156,6 +137,11 @@ const PreferenceSelectionScreen = ({onNext, onPrev}) => {
     const handleEraseData2 = () => {
         setModalRecommendation(false);
         localStorage.removeItem('dataRecommendation');
+    };
+
+    const isFormEmpty = () => {
+        const fieldsValue = form.getFieldsValue();
+        return Object.values(fieldsValue).every((value) => !value);
     };
 
 
@@ -247,14 +233,37 @@ const PreferenceSelectionScreen = ({onNext, onPrev}) => {
                             </Form.Item>
                             <Form.Item>
                                 <div style={{width: "100%", justifyContent: "right", display: "flex"}}>
-                                    <Button style={{
-                                        marginTop: 8,
-                                        borderRadius: 14,
-                                        height: 42,
-                                        width: 200,
-                                        backgroundColor: "#203ABD",
-                                        fontWeight: 700,
-                                    }} type="primary" htmlType="submit">+ Tambahkan</Button>
+                                    {isFormEmpty() ? (
+                                        <Button
+                                            style={{
+                                                marginTop: 8,
+                                                borderRadius: 14,
+                                                height: 42,
+                                                width: 200,
+                                                backgroundColor: "#E5E5E5",
+                                                fontWeight: 700,
+                                            }}
+                                            disabled
+                                        >
+                                            + Tambahkan
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            style={{
+                                                marginTop: 8,
+                                                borderRadius: 14,
+                                                height: 42,
+                                                width: 200,
+                                                backgroundColor: "#203ABD",
+                                                fontWeight: 700,
+                                                color: "#FFFFFF",
+                                            }}
+                                            type="primary"
+                                            htmlType="submit"
+                                        >
+                                            + Tambahkan
+                                        </Button>
+                                    )}
                                 </div>
                             </Form.Item>
                         </Form>

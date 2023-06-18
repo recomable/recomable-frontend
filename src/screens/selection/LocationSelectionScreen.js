@@ -1,4 +1,4 @@
-import {Button, Col, Input, message, Row, Select, Space, Tooltip, Typography} from "antd";
+import {Button, Col, Input, message, Popover, Row, Select, Space, Tooltip, Typography} from "antd";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {GET_MY_PLACE_DETAIL} from "../../setup/redux/type/PlaceType";
@@ -14,7 +14,6 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
     const [userKecamatan, setUserKecamatan] = useState("");
     // const [userLocation, setUserLocation] = useState("");
     const googleMapsPattern = /^https?:\/\/(www\.)?google\.com\/maps(\/.+|(\?q=)).+$/;
-
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -38,6 +37,15 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
         );
     };
 
+    const handleDefaultLocation = async (id) => {
+        const generatedValue = "https://www.google.com/maps/place/Politeknik+Elektronika+Negeri+Surabaya/@-7.2758418,112.7911808,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd7fa10ea2ae883:0xbe22c55d60ef09c7!8m2!3d-7.2758471!4d112.7937557!16s%2Fm%2F05h3fdq?entry=ttu";
+        setLocations((prevLocations) =>
+            prevLocations.map((loc) =>
+                loc.id === id ? {...loc, value: generatedValue} : loc
+            )
+        );
+    }
+
     const handleGenerateLocation = async (id) => {
         if (navigator.geolocation) {
             const options = {
@@ -51,11 +59,11 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, options);
                 });
 
-                const { latitude, longitude } = position.coords;
+                const {latitude, longitude} = position.coords;
                 const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
                 const updatedLocations = locations.map((loc) => {
                     if (loc.id === id) {
-                        return { ...loc, value: googleMapsLink };
+                        return {...loc, value: googleMapsLink};
                     }
                     return loc;
                 });
@@ -87,7 +95,7 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
         if (match && match.length === 3) {
             const latitude = parseFloat(match[1]);
             const longitude = parseFloat(match[2]);
-            return { latitude, longitude };
+            return {latitude, longitude};
         }
 
         const queryRegex = /q=(-?\d+\.\d+),(-?\d+\.\d+)/;
@@ -95,7 +103,7 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
         if (queryMatch && queryMatch.length === 3) {
             const latitude = parseFloat(queryMatch[1]);
             const longitude = parseFloat(queryMatch[2]);
-            return { latitude, longitude };
+            return {latitude, longitude};
         }
 
         return null;
@@ -111,7 +119,7 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                 ...dataMyPlace,
                 locations: userKecamatan,
             };
-            dispatch({ type: `${GET_MY_PLACE_DETAIL}`, payload });
+            dispatch({type: `${GET_MY_PLACE_DETAIL}`, payload});
         } else {
             // Check if all locations are valid Google Maps links
             // console.log(locations, "ini lokasi")
@@ -154,12 +162,24 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                 latitude,
                 longitude,
             };
-            dispatch({ type: `${GET_MY_PLACE_DETAIL}`, payload });
+            dispatch({type: `${GET_MY_PLACE_DETAIL}`, payload});
         }
 
         onNext();
     };
 
+    const contentDefault = (
+        <div>
+            <p>Klik untuk mengisi lokasi dengan lokasi default (Lokasi PENS)</p>
+        </div>
+    );
+
+    const contentGenerate = (
+        <div>
+            <p>Generate lokasi mu dengan memakai GPS</p>
+            <p>(Fitur masih dalam pengembangan!)</p>
+        </div>
+    );
 
     return (
         <>
@@ -284,34 +304,52 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                                 </Space>
                                 <Space direction="vertical" size={8} style={{width: "100%"}}>
                                     {locations.map((location) => (
-                                        <div key={location.id} style={{ display: "flex", marginBottom: 8 }}>
+                                        <div key={location.id} style={{display: "flex", marginBottom: 8}}>
                                             <Search
                                                 value={location.value}
                                                 onChange={(e) =>
                                                     setLocations((prevLocations) =>
                                                         prevLocations.map((loc) =>
-                                                            loc.id === location.id ? { ...loc, value: e.target.value } : loc
+                                                            loc.id === location.id ? {
+                                                                ...loc,
+                                                                value: e.target.value
+                                                            } : loc
                                                         )
                                                     )
                                                 }
                                                 placeholder="Masukkan link lokasi kamu disini"
                                                 size="large"
-                                                style={{ width: "100%" }}
+                                                style={{width: "100%"}}
                                             />
                                             {location.id === 1 && (
-                                            <Button
-                                                onClick={() => handleGenerateLocation(location.id)}
-                                                style={{ marginLeft: 8 }} size="large"
-                                            >
-                                                Generate
-                                            </Button>
+                                                <>
+                                                    <Popover content={contentDefault} title="Lokasi Default">
+                                                        <Button
+                                                            onClick={() => handleDefaultLocation(location.id)}
+                                                            style={{marginLeft: 8}} size="large"
+                                                        >
+                                                            Default
+                                                        </Button>
+                                                    </Popover>
+                                                    <Popover content={contentGenerate} title="Lokasi Kamu">
+                                                        <Button
+                                                            onClick={() => handleGenerateLocation(location.id)}
+                                                            style={{marginLeft: 8}} size="large"
+                                                            disabled={true}
+                                                        >
+                                                            Generate
+                                                        </Button>
+                                                    </Popover>
+                                                </>
                                             )}
-                                            <Button
-                                                onClick={() => handleDeleteLocation(location.id)}
-                                                style={{ marginLeft: 8 }} size="large"
-                                            >
-                                                Delete
-                                            </Button>
+                                            {location.id !== 1 && (
+                                                <Button
+                                                    onClick={() => handleDeleteLocation(location.id)}
+                                                    style={{marginLeft: 8}} size="large"
+                                                >
+                                                    Delete
+                                                </Button>
+                                            )}
                                         </div>
                                     ))}
                                     <Tooltip title="Tambah alamat lain untuk mendapatkan titik tengah">
@@ -331,7 +369,6 @@ const LocationSelectionScreen = ({onNext, onPrev}) => {
                                     </Tooltip>
                                 </Space>
                             </>
-
                     }
                     <Button
                         onClick={() => onSubmit()}
